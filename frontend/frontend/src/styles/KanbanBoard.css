@@ -1,0 +1,78 @@
+.kanban-wrapper {
+    display: flex;
+    height: 100vh;
+    background: linear-gradient(135deg, #e0f7fa, #fff);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.kanban-board {
+    flex: 3;
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    overflow-x: auto;
+}
+
+.kanban-column {
+    flex: 1;
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s ease;
+    min-width: 250px;
+}
+
+.kanban-column:hover {
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+}
+
+.kanban-column h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #00bcd4;
+    padding-bottom: 8px;
+}
+
+.task-card {
+    background: #00bcd4;
+    color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    cursor: grab;
+    transition: transform 0.2s;
+}
+
+.task-card:hover {
+    transform: scale(1.03);
+}
+
+.activity-log {
+    flex: 1;
+    background: #fefefe;
+    border-left: 2px solid #eee;
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.05);
+}
+
+.activity-log h4 {
+    margin-bottom: 15px;
+    color: #555;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+}
+
+.activity-item {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.activity-item time {
+    font-size: 0.75rem;
+    color: #999;
+}
