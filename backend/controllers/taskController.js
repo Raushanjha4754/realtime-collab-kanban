@@ -37,13 +37,33 @@ exports.getTasks = async (req, res) => {
 // update tasks
 exports.updateTask = async (req, res) => {
   try {
-    const updated = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const task = await Task.findById(req.params.id);
 
-    if (!updated) {
-      return res.status(404).json({ msg: "Task not found" });
+    if (!task) return res.status(404).json({ msg: "Task not found" });
+
+    const isAdmin = req.user.role === "admin";
+    const isOwner = task.assignedTo?.toString() === req.user.id;
+
+    if (!isAdmin && !isOwner) {
+      return res.status(403).json({ msg: "Not allowed to update this task" });
     }
+
+    if (!isAdmin) {
+      if (!req.body.status) {
+        return res.status(400).json({ msg: "Only status update allowed" });
+      }
+
+      // ✅ Prevent unassignment
+      task.status = req.body.status; 
+    } else {
+      // ✅ Admin updates only provided fields
+      if (req.body.title !== undefined) task.title = req.body.title;
+      if (req.body.description !== undefined) task.description = req.body.description;
+      if (req.body.status !== undefined) task.status = req.body.status;
+      if (req.body.assignedTo !== undefined) task.assignedTo = req.body.assignedTo;
+    }
+
+    const updated = await task.save();
 
     await new Action({
       user: req.user.id,
@@ -56,23 +76,32 @@ exports.updateTask = async (req, res) => {
 
     res.json(updated);
   } catch (err) {
-    res.status(401).json({ msg: "Failed to update task", error: err.message });
+    res.status(500).json({ msg: "Failed to update task", error: err.message });
   }
 };
+
+
+
 
 // Delete task
 exports.deleteTask = async (req, res) => {
   try {
-    const deletedTask = await Task.findByIdAndDelete(req.params.id);
+    const task = await Task.findById(req.params.id);
 
-    if (!deletedTask) {
-      return res.status(404).json({ msg: "Task not found" });
+    if (!task) return res.status(404).json({ msg: "Task not found" });
+
+    const isAdmin = req.user.role === "admin";
+
+    if (!isAdmin) {
+      return res.status(403).json({ msg: "Only admin can delete tasks" });
     }
+
+    await Task.findByIdAndDelete(req.params.id);
 
     await new Action({
       user: req.user.id,
       actionType: "Deleted Task",
-      task: deletedTask._id,
+      task: task._id,
     }).save();
 
     const io = socket.getIO();
@@ -121,5 +150,36 @@ exports.smartAssign = async (req, res) => {
     res.json({ msg: "Task smart assigned", task: updatedTask });
   } catch (err) {
     res.status(500).json({ msg: "Smart assign failed", error: err.message });
+  }
+};
+
+// Claim Task Controller
+exports.claimTask = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.taskId);
+
+    if (!task) {
+      return res.status(404).json({ msg: "Task not found" });
+    }
+
+    if (task.assignedTo) {
+      return res.status(400).json({ msg: "Task is already assigned" });
+    }
+
+    task.assignedTo = req.user.id;
+    await task.save();
+
+    await new Action({
+      user: req.user.id,
+      actionType: "Claimed Task",
+      task: task._id,
+    }).save();
+
+    const io = socket.getIO();
+    io.emit("taskUpdated", task);
+
+    res.json({ msg: "Task claimed successfully", task });
+  } catch (err) {
+    res.status(500).json({ msg: "Failed to claim task", error: err.message });
   }
 };

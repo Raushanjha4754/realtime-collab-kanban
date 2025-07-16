@@ -1,47 +1,33 @@
-import React, { useState } from "react";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import KanbanBoard from "./components/KanbanBoard";
+import { useContext, useState } from 'react';
+import { AuthContext } from './context/AuthContext';
+import Login from './components/Login';
+import Register from './components/Register';
+import KanbanBoard from './components/KanbanBoard';
 
 const App = () => {
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
-  const [user, setUser] = useState(
-    localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user"))
-      : null
-  );
-  const [showLogin, setShowLogin] = useState(true);
+    const { user, token, logout } = useContext(AuthContext);
+    const [showLogin, setShowLogin] = useState(true);
 
-  const handleLogout = () => {
-    setToken("");
-    setUser(null);
-    localStorage.clear();
-  };
+    if (!token) {
+        return showLogin ? (
+            <Login setShowLogin={setShowLogin} />
+        ) : (
+            <Register setShowLogin={setShowLogin} />
+        );
+    }
 
-  if (!token) {
-    return showLogin ? (
-      <Login
-        setUser={setUser}
-        setToken={setToken}
-        setShowLogin={setShowLogin}
-      />
-    ) : (
-      <Register setShowLogin={setShowLogin} />
+    return (
+        <>
+            <button
+                onClick={logout}
+                style={{ position: 'absolute', top: 10, right: 10 }}
+            >
+                Logout ({user.role})
+            </button>
+
+            <KanbanBoard user={user} token={token} /> {/* ✅ Pass user and token */}
+        </>
     );
-  }
-
-  // ✅ FIX: Add return here
-  return (
-    <>
-      <button
-        onClick={handleLogout}
-        style={{ position: "absolute", top: 10, right: 10 }}
-      >
-        Logout
-      </button>
-      <KanbanBoard token={token} user={user} />
-    </>
-  );
 };
 
 export default App;

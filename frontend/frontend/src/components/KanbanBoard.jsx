@@ -3,21 +3,29 @@ import { io } from 'socket.io-client';
 import axios from 'axios';
 import TaskCard from './TaskCard';
 import ActivityLog from './ActivityLog';
+import TaskForm from './TaskForm';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+
 import '../styles/KanbanBoard.css';
 
-const KanbanBoard = ({ token, user }) => {
+const KanbanBoard = () => {
+    const { token, user } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
     const [activity, setActivity] = useState([]);
+    const [showForm, setShowForm] = useState(false);
+
+    const fetchTasks = async () => {
+        const res = await axios.get('http://localhost:5000/api/tasks', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        setTasks(res.data);
+    };
 
     useEffect(() => {
         const socket = io('http://localhost:5000');
 
-        const fetchTasks = async () => {
-            const res = await axios.get('http://localhost:5000/api/tasks', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setTasks(res.data);
-        };
+        fetchTasks();
 
         const fetchActivity = async () => {
             const res = await axios.get('http://localhost:5000/api/actions', {
@@ -26,7 +34,6 @@ const KanbanBoard = ({ token, user }) => {
             setActivity(res.data);
         };
 
-        fetchTasks();
         fetchActivity();
 
         socket.on('taskCreated', (task) => {
@@ -48,26 +55,54 @@ const KanbanBoard = ({ token, user }) => {
     }, []);
 
     const handleDragStart = (e, id) => {
+    const task = tasks.find(t => t._id === id);
+
+    if (user.role === 'admin' || (task.assignedTo && task.assignedTo._id === user.id)) {
         e.dataTransfer.setData('taskId', id);
-    };
+    } else {
+        e.preventDefault();
+        alert("You can only move your own tasks.");
+    }
+};
+
 
     const handleDrop = async (e, newStatus) => {
-        e.preventDefault();
-        const taskId = e.dataTransfer.getData('taskId');
-        const task = tasks.find(t => t._id === taskId);
+    e.preventDefault();
+    const taskId = e.dataTransfer.getData('taskId');
+    const task = tasks.find(t => t._id === taskId);
 
-        if (task.status !== newStatus) {
-            await axios.put(`http://localhost:5000/api/tasks/${taskId}`,
-                { ...task, status: newStatus },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-        }
-    };
+    if (!task) return;
+
+    if (user.role !== 'admin' && (!task.assignedTo || task.assignedTo._id !== user.id)) {
+        alert("You can't move this task.");
+        return;
+    }
+
+    if (task.status !== newStatus) {
+        await axios.put(`http://localhost:5000/api/tasks/${taskId}`,
+    { status: newStatus },
+    { headers: { Authorization: `Bearer ${token}` } }
+);
+
+    }
+};
+
 
     const columns = ['Todo', 'In Progress', 'Done'];
 
     return (
         <div className="kanban-wrapper">
+
+            {user.role === 'admin' && (
+    <button 
+        className="create-task-button"
+        onClick={() => setShowForm(true)}
+    >
+        + New Task
+    </button>
+)}
+
+
             <div className="kanban-board">
                 {columns.map(status => (
                     <div
@@ -85,6 +120,14 @@ const KanbanBoard = ({ token, user }) => {
             </div>
 
             <ActivityLog activity={activity} />
+
+            {showForm && (
+                <TaskForm 
+                    token={token} 
+                    onClose={() => setShowForm(false)} 
+                    refreshTasks={fetchTasks} 
+                />
+            )}
         </div>
     );
 };

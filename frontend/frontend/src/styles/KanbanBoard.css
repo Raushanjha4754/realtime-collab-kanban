@@ -76,3 +76,22 @@
     font-size: 0.75rem;
     color: #999;
 }
+
+.create-task-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #3498db;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: background 0.3s;
+}
+
+.create-task-button:hover {
+  background: #2980b9;
+}

@@ -5,17 +5,22 @@ const Register = ({ setShowLogin }) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('user'); // 👈 Default role
     const [error, setError] = useState('');
 
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:5000/api/auth/register', {
-                username, email, password
+                username,
+                email,
+                password,
+                role,   // 👈 Send role to backend
             });
-            setShowLogin(true); // Go to login after register
+            alert("Registration successful! Please login.");
+            setShowLogin(true);
         } catch (err) {
-            setError(err.response?.data?.msg || 'Registration failed');
+            setError(err.response?.data?.message || 'Registration failed');
         }
     };
 
@@ -26,6 +31,12 @@ const Register = ({ setShowLogin }) => {
                 <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '10px' }} />
                 <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '10px' }} />
                 <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '10px' }} />
+                
+                <select value={role} onChange={e => setRole(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '10px' }} required>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+
                 <button type="submit" style={{ width: '100%', padding: '10px' }}>Register</button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>

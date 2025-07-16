@@ -1,0 +1,78 @@
+.task-card {
+  padding: 15px;
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  cursor: grab;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.task-card:active {
+  transform: scale(1.03);
+}
+
+.task-assignee {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.task-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.3s;
+}
+
+.delete-btn {
+  background: #e74c3c;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
+}
+
+.assign-btn {
+  background: #27ae60;
+  color: white;
+}
+
+.assign-btn:hover {
+  background: #1e8449;
+}
+
+.kanban-column {
+  transition: background 0.3s ease;
+}
+
+.kanban-column:hover {
+  background: #f0f0f0;
+}
+
+.kanban-card-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.kanban-card-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}

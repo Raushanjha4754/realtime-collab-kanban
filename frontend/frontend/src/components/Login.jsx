@@ -1,26 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
+import { AuthContext } from '../context/AuthContext';
+import '../styles/Auth.css';
 
-import '../styles/Auth.css'
-
-const Login = ({ setUser, setToken, setShowLogin }) => {
-  const [username, setUsername] = useState("");
+const Login = ({ setShowLogin }) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user");
   const [error, setError] = useState("");
+
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email: username,
+        email,
         password,
+        role,
       });
-      setToken(res.data.token);
-      setUser(res.data.user);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      login(res.data.user, res.data.token); // ✅ This sets both user + token + localStorage
+
     } catch (err) {
-      setError(err.response?.data?.msg || "Login failed");
+      setError(err.response?.data?.message || "Login failed");
     }
   };
 
@@ -30,10 +33,10 @@ const Login = ({ setUser, setToken, setShowLogin }) => {
         <h2>Login</h2>
         {error && <p className="error">{error}</p>}
         <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="password"
@@ -41,12 +44,19 @@ const Login = ({ setUser, setToken, setShowLogin }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
+        <select value={role} onChange={e => setRole(e.target.value)}>
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+
         <button type="submit">Login</button>
         <p>
           Don’t have an account?{" "}
           <span onClick={() => setShowLogin(false)} className="link">
             Register
           </span>
+
         </p>
       </form>
     </div>
