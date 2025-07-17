@@ -6,6 +6,8 @@ import ActivityLog from "./ActivityLog";
 import TaskForm from "./TaskForm";
 import ConflictModal from "./ConflictModal";
 import { AuthContext } from "../context/AuthContext";
+import TaskDetailsModal from './TaskDetailsModal';
+
 
 import "../styles/KanbanBoard.css";
 
@@ -14,6 +16,7 @@ const KanbanBoard = () => {
   const [tasks, setTasks] = useState([]);
   const [activity, setActivity] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   // Conflict state
   const [conflictTask, setConflictTask] = useState(null); // local version
@@ -199,6 +202,7 @@ const KanbanBoard = () => {
                   user={user}
                   token={token}
                   onDragStart={handleDragStart}
+                  onCardClick={(task) => setSelectedTask(task)}
                   column={status}
                 />
               ))}
@@ -226,6 +230,13 @@ const KanbanBoard = () => {
           onCancel={handleCancelConflict}
         />
       )}
+
+      {selectedTask && (
+      <TaskDetailsModal
+        task={selectedTask}
+        onClose={() => setSelectedTask(null)}
+      />
+    )}
     </div>
   );
 };

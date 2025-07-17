@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import '../styles/TaskCard.css'
+import "../styles/TaskCard.css";
 
-const TaskCard = ({ task, user, token, onDragStart, column }) => {
+const TaskCard = ({ task, user, token, onDragStart, column, onCardClick }) => {
   const [users, setUsers] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -101,6 +101,16 @@ const TaskCard = ({ task, user, token, onDragStart, column }) => {
       draggable
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      onClick={() => {
+        if (
+          user.role === "admin" ||
+          (task.assignedTo && task.assignedTo._id === user.id)
+        ) {
+          onCardClick(task);
+        } else {
+          alert("You can only view details of your own tasks.");
+        }
+      }}
       style={cardStyle}
     >
       <h4>{task.title}</h4>
@@ -119,7 +129,11 @@ const TaskCard = ({ task, user, token, onDragStart, column }) => {
       {/* Admin only actions */}
       {user.role === "admin" && (
         <>
-          <select onChange={handleManualAssign} defaultValue="" className="task-select">
+          <select
+            onChange={handleManualAssign}
+            defaultValue=""
+            className="task-select"
+          >
             <option value="">Reassign to...</option>
             {users.map((u) => (
               <option key={u._id} value={u._id}>
