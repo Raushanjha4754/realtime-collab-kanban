@@ -17,7 +17,7 @@ const KanbanBoard = () => {
 
   // Conflict state
   const [conflictTask, setConflictTask] = useState(null); // local version
-  const [serverTask, setServerTask] = useState(null);     // server version
+  const [serverTask, setServerTask] = useState(null); // server version
 
   const fetchTasks = async () => {
     const res = await axios.get("http://localhost:5000/api/tasks", {
@@ -32,9 +32,10 @@ const KanbanBoard = () => {
     fetchTasks();
 
     const fetchActivity = async () => {
-      const res = await axios.get("http://localhost:5000/api/actions", {
+      const res = await axios.get("http://localhost:5000/api/tasks/actions", {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setActivity(res.data);
     };
 
@@ -91,7 +92,10 @@ const KanbanBoard = () => {
 
     if (!task) return;
 
-    if (user.role !== "admin" && (!task.assignedTo || task.assignedTo._id !== user.id)) {
+    if (
+      user.role !== "admin" &&
+      (!task.assignedTo || task.assignedTo._id !== user.id)
+    ) {
       alert("You can't move this task.");
       return;
     }
@@ -185,6 +189,7 @@ const KanbanBoard = () => {
             className="kanban-column"
           >
             <h3>{status}</h3>
+            <div className="task-list">
             {tasks
               .filter((t) => t.status === status)
               .map((task) => (
@@ -196,6 +201,7 @@ const KanbanBoard = () => {
                   onDragStart={handleDragStart}
                 />
               ))}
+              </div>
           </div>
         ))}
       </div>

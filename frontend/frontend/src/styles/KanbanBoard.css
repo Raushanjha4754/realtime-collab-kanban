@@ -1,10 +1,14 @@
+/* Wrapper around the whole Kanban + ActivityLog */
 .kanban-wrapper {
     display: flex;
-    height: 100vh;
+    height: calc(100vh - 60px); /* Subtract TopBar height */
+    margin-top: 60px; /* Push content below fixed TopBar */
     background: linear-gradient(135deg, #e0f7fa, #fff);
     font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
 }
 
+/* Kanban board (columns section) */
 .kanban-board {
     flex: 3;
     display: flex;
@@ -13,6 +17,7 @@
     overflow-x: auto;
 }
 
+/* Each Kanban column */
 .kanban-column {
     flex: 1;
     background: #fff;
@@ -21,6 +26,9 @@
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     transition: box-shadow 0.3s ease;
     min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 120px); /* Adjust based on TopBar + padding */
 }
 
 .kanban-column:hover {
@@ -33,8 +41,17 @@
     margin-bottom: 15px;
     border-bottom: 2px solid #00bcd4;
     padding-bottom: 8px;
+    font-size: 1.2rem;
 }
 
+/* Make the tasks list scrollable */
+.task-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px; /* For scrollbar spacing */
+}
+
+/* Task cards */
 .task-card {
     background: #00bcd4;
     color: #fff;
@@ -43,13 +60,15 @@
     margin-bottom: 12px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.1);
     cursor: grab;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .task-card:hover {
     transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
+/* Activity Log (Right Sidebar) */
 .activity-log {
     flex: 1;
     background: #fefefe;
@@ -64,6 +83,7 @@
     color: #555;
     border-bottom: 1px solid #ccc;
     padding-bottom: 8px;
+    font-size: 1.1rem;
 }
 
 .activity-item {
@@ -77,39 +97,106 @@
     color: #999;
 }
 
+/* Create Task Button - position updated for TopBar */
 .create-task-button {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #3498db;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  transition: background 0.3s;
+    position: fixed;
+    top: 70px; /* Below the TopBar */
+    right: 20px;
+    background: #3498db;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: background 0.3s;
+    z-index: 998;
 }
 
 .create-task-button:hover {
-  background: #2980b9;
+    background: #2980b9;
 }
 
-
+/* Conflict Modal */
 .conflict-modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center;
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    z-index: 1000;
 }
 
 .conflict-modal {
-    background: #fff; padding: 20px; border-radius: 8px; width: 300px;
+    background: #fff; 
+    padding: 20px; 
+    border-radius: 8px; 
+    width: 300px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
-.conflict-fields input, .conflict-fields textarea, .conflict-fields select {
-    width: 100%; margin-bottom: 10px;
+.conflict-fields input, 
+.conflict-fields textarea, 
+.conflict-fields select {
+    width: 100%; 
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.conflict-actions {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .conflict-actions button {
-    margin-right: 10px;
+    margin-left: 10px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.conflict-actions .merge-btn {
+    background: #2ecc71;
+    color: white;
+}
+
+.conflict-actions .overwrite-btn {
+    background: #e67e22;
+    color: white;
+}
+
+.conflict-actions .cancel-btn {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .kanban-wrapper {
+        flex-direction: column;
+    }
+
+    .activity-log {
+        border-left: none;
+        border-top: 2px solid #eee;
+        box-shadow: none;
+        margin-top: 20px;
+    }
+
+    .kanban-board {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .create-task-button {
+        top: 70px;
+        right: 20px;
+    }
 }
