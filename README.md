@@ -66,7 +66,7 @@ npm run dev
 |----------------|-----------------------|
 | **Frontend**   | [Live Frontend]((https://realtime-collab-kanban.vercel.app/)) |
 | **Backend**    | [Live Backend](https://realtime-collab-kanban.onrender.com/)   |
-| **Demo Video** | [Watch Demo](https://your-demo-link.com)        |
+| **Demo Video** | [Watch Demo](https://www.loom.com/share/5b8644eeecb4441bb3abfa215ae1eda0?sid=8185e300-3b98-49a4-8ebd-c8d69bd2470d)        |
 | **Logic Doc**  | [Logic_Document.md](https://github.com/Monib007/realtime-collab-kanban/blob/main/Logic_Document.md) |
 
 
@@ -129,8 +129,7 @@ JWT_SECRET=your_jwt_secret
   - Overwrite the server version
   - Cancel the operation
 
-📹 Demo Video
-Click to Watch Demo Video
+📹 Demo Video Link - (https://www.loom.com/share/5b8644eeecb4441bb3abfa215ae1eda0?sid=8185e300-3b98-49a4-8ebd-c8d69bd2470d)
 
 📄 Logic Document
 Logic_Document.md
@@ -142,7 +141,7 @@ Logic_Document.md
 | **GitHub Repo**   | [GitHub Repository](https://github.com/Monib007/realtime-collab-kanban) |
 | **Live Frontend** | [Live Frontend](https://realtime-collab-kanban.vercel.app/) |
 | **Live Backend**  | [Live Backend](https://realtime-collab-kanban.onrender.com/)   |
-| **Demo Video**    | [Watch Demo](https://your-demo-link.com)        |
+| **Demo Video**    | [Watch Demo](https://www.loom.com/share/5b8644eeecb4441bb3abfa215ae1eda0?sid=8185e300-3b98-49a4-8ebd-c8d69bd2470d)        |
 | **Logic Document**| [Logic_Document.md](https://github.com/Monib007/realtime-collab-kanban/blob/main/Logic_Document.md) |
 
 
