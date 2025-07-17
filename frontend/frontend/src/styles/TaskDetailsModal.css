@@ -1,29 +1,74 @@
 .modal-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
-  display: flex; justify-content: center; align-items: center;
-  z-index: 999;
+  position: fixed; 
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  z-index: 9999;  /* Increased for safety */
 }
 
 .modal-content {
-  background: white;
-  padding: 20px 30px;
+  background: #fff;  /* Solid white background */
+  padding: 25px 30px;
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  max-width: 450px;
   width: 90%;
+  color: #333;   /* Dark text for better readability */
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.modal-content p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.update-btn {
+  background: #00bcd4;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+  width: 100%;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.update-btn:hover {
+  background: #0097a7;
 }
 
 .close-btn {
-  margin-top: 20px;
-  padding: 10px 15px;
-  background: #007bff;
-  color: white;
+  margin-top: 10px;
+  padding: 10px 16px;
+  background: #e74c3c;
+  color: #fff;
   border: none;
   border-radius: 8px;
+  width: 100%;
+  font-weight: bold;
   cursor: pointer;
 }
 
 .close-btn:hover {
-  background: #0056b3;
+  background: #c0392b;
 }

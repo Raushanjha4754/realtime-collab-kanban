@@ -6,8 +6,7 @@ import ActivityLog from "./ActivityLog";
 import TaskForm from "./TaskForm";
 import ConflictModal from "./ConflictModal";
 import { AuthContext } from "../context/AuthContext";
-import TaskDetailsModal from './TaskDetailsModal';
-
+import TaskDetailsModal from "./TaskDetailsModal";
 
 import "../styles/KanbanBoard.css";
 
@@ -193,20 +192,20 @@ const KanbanBoard = () => {
           >
             <h3>{status}</h3>
             <div className="task-list">
-            {tasks
-              .filter((t) => t.status === status)
-              .map((task) => (
-                <TaskCard
-                  key={task._id}
-                  task={task}
-                  user={user}
-                  token={token}
-                  onDragStart={handleDragStart}
-                  onCardClick={(task) => setSelectedTask(task)}
-                  column={status}
-                />
-              ))}
-              </div>
+              {tasks
+                .filter((t) => t.status === status)
+                .map((task) => (
+                  <TaskCard
+                    key={task._id}
+                    task={task}
+                    user={user}
+                    token={token}
+                    onDragStart={handleDragStart}
+                    onCardClick={(task) => setSelectedTask(task)}
+                    column={status}
+                  />
+                ))}
+            </div>
           </div>
         ))}
       </div>
@@ -232,11 +231,14 @@ const KanbanBoard = () => {
       )}
 
       {selectedTask && (
-      <TaskDetailsModal
-        task={selectedTask}
-        onClose={() => setSelectedTask(null)}
-      />
-    )}
+        <TaskDetailsModal
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
+          token={token}
+          refreshTasks={fetchTasks}
+          user={user}
+        />
+      )}
     </div>
   );
 };

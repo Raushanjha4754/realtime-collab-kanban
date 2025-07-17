@@ -27,13 +27,21 @@ const TaskCard = ({ task, user, token, onDragStart, column, onCardClick }) => {
     setIsDragging(false);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (e) => {
+    e.stopPropagation(); // Prevent card click
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${task.title}"?`
+    );
+
+    if (!confirmDelete) return; // Cancel deletion if user clicks "No"
     await axios.delete(`http://localhost:5000/api/tasks/${task._id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
   };
 
-  const handleSmartAssign = async () => {
+  const handleSmartAssign = async (e) => {
+    e.stopPropagation(); // Prevent card click
     await axios.post(
       `http://localhost:5000/api/tasks/smart-assign/${task._id}`,
       {},
@@ -42,6 +50,8 @@ const TaskCard = ({ task, user, token, onDragStart, column, onCardClick }) => {
   };
 
   const handleManualAssign = async (e) => {
+    e.stopPropagation();
+
     const newUserId = e.target.value;
     try {
       await axios.put(
@@ -114,7 +124,7 @@ const TaskCard = ({ task, user, token, onDragStart, column, onCardClick }) => {
       style={cardStyle}
     >
       <h4>{task.title}</h4>
-      <p>{task.description}</p>
+      {/* <p>{task.description}</p> */}
       <p className="task-assignee">
         <b>Assigned To:</b> {task.assignedTo?.username || "Unassigned"}
       </p>
@@ -130,6 +140,7 @@ const TaskCard = ({ task, user, token, onDragStart, column, onCardClick }) => {
       {user.role === "admin" && (
         <>
           <select
+          onClick={(e) => e.stopPropagation()}
             onChange={handleManualAssign}
             defaultValue=""
             className="task-select"
