@@ -1,9 +1,9 @@
 import React from 'react';
 import '../styles/KanbanBoard.css';
 
-const ActivityLog = ({ activity }) => {
+const ActivityLog = ({ activity, show }) => {
     return (
-        <div className="activity-log">
+        <div className={`activity-log ${show ? "show" : ""}`}>
             <h4>Activity Log</h4>
             {activity.map((act, idx) => (
                 <div key={idx} className="activity-item">

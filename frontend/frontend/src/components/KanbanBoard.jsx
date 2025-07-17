@@ -16,6 +16,7 @@ const KanbanBoard = () => {
   const [activity, setActivity] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [showActivity, setShowActivity] = useState(false);
 
   // Conflict state
   const [conflictTask, setConflictTask] = useState(null); // local version
@@ -174,12 +175,21 @@ const KanbanBoard = () => {
   return (
     <div className="kanban-wrapper">
       {user.role === "admin" && (
-        <button
-          className="create-task-button"
-          onClick={() => setShowForm(true)}
-        >
-          + New Task
-        </button>
+        <div className="kanban-buttons">
+          <button
+            className="create-task-button"
+            onClick={() => setShowForm(true)}
+          >
+            + New Task
+          </button>
+
+          <button
+            className="activity-toggle-button"
+            onClick={() => setShowActivity((prev) => !prev)}
+          >
+            {showActivity ? "Close Log" : "Activity Log"}
+          </button>
+        </div>
       )}
 
       <div className="kanban-board">
@@ -210,7 +220,7 @@ const KanbanBoard = () => {
         ))}
       </div>
 
-      <ActivityLog activity={activity} />
+      <ActivityLog activity={activity} show={showActivity} />
 
       {showForm && (
         <TaskForm
