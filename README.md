@@ -64,7 +64,7 @@ npm run dev
 
 | Part           | Link                  |
 |----------------|-----------------------|
-| **Frontend**   | [Live Frontend](https://your-frontend-link.com) |
+| **Frontend**   | [Live Frontend]((https://realtime-collab-kanban.vercel.app/)) |
 | **Backend**    | [Live Backend](https://your-backend-link.com)   |
 | **Demo Video** | [Watch Demo](https://your-demo-link.com)        |
 | **Logic Doc**  | [Logic_Document.md](https://github.com/Monib007/realtime-collab-kanban/blob/main/Logic_Document.md) |
@@ -140,7 +140,7 @@ Logic_Document.md
 | Item              | Link |
 |------------------|------|
 | **GitHub Repo**   | [GitHub Repository](https://github.com/Monib007/realtime-collab-kanban) |
-| **Live Frontend** | [Live Frontend](https://your-frontend-link.com) |
+| **Live Frontend** | [Live Frontend](https://realtime-collab-kanban.vercel.app/) |
 | **Live Backend**  | [Live Backend](https://your-backend-link.com)   |
 | **Demo Video**    | [Watch Demo](https://your-demo-link.com)        |
 | **Logic Document**| [Logic_Document.md](https://github.com/Monib007/realtime-collab-kanban/blob/main/Logic_Document.md) |
