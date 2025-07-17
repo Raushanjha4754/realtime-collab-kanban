@@ -1,73 +1,221 @@
-.auth-container {
+/* Auth.css */
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
 }
 
+/* Auth Container */
+.auth-container {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+}
+
+/* Auth Box */
 .auth-box {
-  background: #fff;
-  padding: 30px 40px;
+  background: white;
+  padding: 40px;
   border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  width: 320px;
-  transition: transform 0.3s ease;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  transform-style: preserve-3d;
+  transition: all 0.5s ease;
+  animation: fadeIn 0.6s ease-out forwards;
+  position: relative;
+  overflow: hidden;
 }
 
-.auth-box:hover {
-  transform: translateY(-3px);
+.auth-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
 }
 
 .auth-box h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   color: #333;
+  font-weight: 600;
+  font-size: 28px;
 }
 
+/* Input Fields */
 .auth-box input {
   width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 15px;
+  padding: 15px;
+  margin-bottom: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  transition: border 0.3s ease;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
 }
 
 .auth-box input:focus {
-  border: 1px solid #667eea;
   outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  transform: translateY(-2px);
 }
 
+/* Select Dropdown */
+.auth-box select {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 15px;
+}
+
+.auth-box select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+/* Button */
 .auth-box button {
   width: 100%;
-  background: #667eea;
-  color: #fff;
-  padding: 12px;
+  padding: 15px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: white;
   border: none;
   border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  margin-top: 10px;
 }
 
 .auth-box button:hover {
-  background: #5a67d8;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
 }
 
-.auth-box .link {
+.auth-box button:active {
+  transform: translateY(-1px);
+}
+
+/* Switch Auth */
+.switch-auth {
+  text-align: center;
+  margin-top: 25px;
+  color: #666;
+  font-size: 15px;
+}
+
+.link {
   color: #667eea;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
 }
 
-.auth-box .link:hover {
+.link:hover {
+  color: #764ba2;
   text-decoration: underline;
 }
 
+/* Error Message */
 .error {
-  color: red;
-  font-size: 0.85rem;
+  color: #e74c3c;
+  background-color: #fadbd8;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
   text-align: center;
-  margin-bottom: 10px;
+  animation: shake 0.5s ease;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+/* Flip animation for switching between login/register */
+.flip-enter {
+  transform: rotateY(90deg);
+  opacity: 0;
+}
+
+.flip-enter-active {
+  transform: rotateY(0deg);
+  opacity: 1;
+  transition: all 0.5s ease;
+}
+
+.flip-exit {
+  transform: rotateY(0deg);
+  opacity: 1;
+}
+
+.flip-exit-active {
+  transform: rotateY(-90deg);
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .auth-box {
+    padding: 30px 20px;
+  }
+  
+  .auth-box h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .auth-box input,
+  .auth-box select,
+  .auth-box button {
+    padding: 12px;
+    font-size: 15px;
+  }
 }

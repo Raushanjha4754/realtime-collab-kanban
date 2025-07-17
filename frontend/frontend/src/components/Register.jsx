@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../styles/Auth.css';
 
 const Register = ({ setShowLogin }) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('user'); // 👈 Default role
+    const [role, setRole] = useState('user');
     const [error, setError] = useState('');
 
     const handleRegister = async (e) => {
@@ -15,7 +16,7 @@ const Register = ({ setShowLogin }) => {
                 username,
                 email,
                 password,
-                role,   // 👈 Send role to backend
+                role,
             });
             alert("Registration successful! Please login.");
             setShowLogin(true);
@@ -25,22 +26,44 @@ const Register = ({ setShowLogin }) => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-            <h2>Register</h2>
-            <form onSubmit={handleRegister}>
-                <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '10px' }} />
-                <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '10px' }} />
-                <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '10px' }} />
+        <div className="auth-container">
+            <form onSubmit={handleRegister} className="auth-box">
+                <h2>Register</h2>
+                {error && <p className="error">{error}</p>}
+
+                <input
+                    type="text"
+                    placeholder="Username"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                />
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                />
                 
-                <select value={role} onChange={e => setRole(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '10px' }} required>
+                <select
+                    value={role}
+                    onChange={e => setRole(e.target.value)}
+                >
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
                 </select>
 
-                <button type="submit" style={{ width: '100%', padding: '10px' }}>Register</button>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                <button type="submit">Register</button>
+
+                <p className="switch-auth">
+                    Already have an account? <span onClick={() => setShowLogin(true)} className="link">Login</span>
+                </p>
             </form>
-            <p>Already have an account? <span onClick={() => setShowLogin(true)} style={{ color: 'blue', cursor: 'pointer' }}>Login</span></p>
         </div>
     );
 };

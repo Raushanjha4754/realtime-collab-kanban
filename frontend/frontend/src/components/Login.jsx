@@ -51,7 +51,7 @@ const Login = ({ setShowLogin }) => {
         </select>
 
         <button type="submit">Login</button>
-        <p>
+        <p className="switch-auth">
           Don’t have an account?{" "}
           <span onClick={() => setShowLogin(false)} className="link">
             Register
