@@ -63,7 +63,17 @@ exports.updateTask = async (req, res) => {
       if (req.body.assignedTo !== undefined) task.assignedTo = req.body.assignedTo;
     }
 
-    const updated = await task.save();
+    const clientUpdatedAt = req.body.updatedAt;
+
+if (clientUpdatedAt && new Date(clientUpdatedAt).getTime() !== new Date(task.updatedAt).getTime()) {
+    return res.status(409).json({
+        msg: "Conflict detected",
+        serverTask: task
+    });
+}
+
+const updated = await task.save();
+
 
     await new Action({
       user: req.user.id,

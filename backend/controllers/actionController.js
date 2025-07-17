@@ -13,3 +13,25 @@ exports.getActions = async (req, res) => {
     res.status(500).json({ msg: 'Failed to fetch actions', error: err.message });
   }
 };
+
+
+exports.getLastActions = async (req, res) => {
+  try {
+    const actions = await Action.find()
+      .populate("user", "username")
+      .populate("task", "title")
+      .sort({ timestamp: -1 })
+      .limit(20);
+
+    // Format response for frontend
+    const formatted = actions.map(act => ({
+      message: `${act.user.username} ${act.actionType} "${act.task?.title || 'Deleted Task'}"`,
+      time: act.timestamp
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    res.status(500).json({ msg: "Failed to fetch actions", error: err.message });
+  }
+};
+

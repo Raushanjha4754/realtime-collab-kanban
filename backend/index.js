@@ -27,8 +27,8 @@ app.use('/api/auth', authRoutes)
 const taskRoutes = require('./routes/taskRoutes')
 app.use('/api/tasks', taskRoutes)
 
-const actionRoutes = require('./routes/actionRoutes');
-app.use('/api/actions', actionRoutes);
+// const actionRoutes = require('./routes/actionRoutes');
+// app.use('/api/actions', actionRoutes);
 
 // http server and socket.Io server
 const server = http.createServer(app)

@@ -1,7 +1,7 @@
-const express = require('express');
-const router = express.Router();
-const { getActions } = require('../controllers/actionController');
+// const express = require('express');
+// const router = express.Router();
+// const { getActions } = require('../controllers/actionController');
 
-router.get('/', getActions);
+// router.get('/', getActions);
 
-module.exports = router;
+// module.exports = router;

@@ -95,3 +95,21 @@
 .create-task-button:hover {
   background: #2980b9;
 }
+
+
+.conflict-modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center;
+}
+
+.conflict-modal {
+    background: #fff; padding: 20px; border-radius: 8px; width: 300px;
+}
+
+.conflict-fields input, .conflict-fields textarea, .conflict-fields select {
+    width: 100%; margin-bottom: 10px;
+}
+
+.conflict-actions button {
+    margin-right: 10px;
+}

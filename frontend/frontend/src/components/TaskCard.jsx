@@ -3,6 +3,7 @@ import axios from "axios";
 
 const TaskCard = ({ task, user, token, onDragStart }) => {
   const [users, setUsers] = useState([]);
+  const [isDragging, setIsDragging] = useState(false); // 🔥 For animation
 
   useEffect(() => {
     if (user.role === "admin") {
@@ -15,6 +16,15 @@ const TaskCard = ({ task, user, token, onDragStart }) => {
       fetchUsers();
     }
   }, []);
+
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    onDragStart(e, task._id);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
 
   const handleDelete = async () => {
     await axios.delete(`http://localhost:5000/api/tasks/${task._id}`, {
@@ -32,31 +42,56 @@ const TaskCard = ({ task, user, token, onDragStart }) => {
 
   const handleManualAssign = async (e) => {
     const newUserId = e.target.value;
-    await axios.put(
-      `http://localhost:5000/api/tasks/${task._id}`,
-      { assignedTo: newUserId },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+
+    try {
+      await axios.put(
+        `http://localhost:5000/api/tasks/${task._id}`,
+        {
+          assignedTo: newUserId,
+          updatedAt: task.updatedAt, // ✅ For conflict detection
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (err) {
+      if (err.response && err.response.status === 409) {
+        alert("Conflict detected! Someone else updated this task. Please refresh and try again.");
+      } else {
+        console.error(err);
+      }
+    }
   };
 
   const handleClaimTask = async () => {
-    await axios.post(`http://localhost:5000/api/tasks/claim/${task._id}`, {}, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await axios.post(
+      `http://localhost:5000/api/tasks/claim/${task._id}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  };
+
+  // 🔥 Animation Style
+  const cardStyle = {
+    padding: "10px",
+    background: "#fff",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    marginBottom: "10px",
+    cursor: "grab",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    transform: isDragging ? "scale(1.05)" : "scale(1)",
+    boxShadow: isDragging
+      ? "0 8px 20px rgba(0,0,0,0.3)"
+      : "0 2px 5px rgba(0,0,0,0.1)",
   };
 
   return (
     <div
       draggable
-      onDragStart={(e) => onDragStart(e, task._id)}
-      style={{
-        padding: "10px",
-        background: "#fff",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        marginBottom: "10px",
-        cursor: "grab",
-      }}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      style={cardStyle}
     >
       <h4>{task.title}</h4>
       <p>{task.description}</p>
@@ -118,7 +153,7 @@ const TaskCard = ({ task, user, token, onDragStart }) => {
         </>
       )}
 
-      {/* Claim Task button for BOTH Admin and User */}
+      {/* Claim Task (Both Admin & User) */}
       {!task.assignedTo && (
         <button
           onClick={handleClaimTask}
