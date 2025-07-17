@@ -17,6 +17,8 @@
 .profile-section {
     display: flex;
     align-items: center;
+    position: relative;
+    cursor: pointer;
 }
 
 .profile-pic {
@@ -24,6 +26,16 @@
     height: 36px;
     border-radius: 50%;
     margin-right: 10px;
+    transition: transform 0.3s;
+}
+
+.profile-pic:hover {
+    transform: scale(1.05);
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
 }
 
 .username {
@@ -31,39 +43,81 @@
     margin-right: 5px;
 }
 
-.role {
-    font-size: 0.85rem;
-    color: #bbb;
+.dropdown-icon {
+    font-size: 16px;
 }
 
+/* Profile Dropdown */
+.profile-dropdown {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background: #2b2b3d;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: fadeIn 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.profile-dropdown button {
+    background: #ff4d4f;
+    border: none;
+    padding: 8px 10px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.profile-dropdown button:hover {
+    background: #ff7875;
+}
+
+/* Topbar actions */
 .topbar-actions {
     display: flex;
     align-items: center;
+    gap: 12px;
 }
 
-.topbar-btn, .logout-btn {
-    background: #2c3e50;
-    color: #fff;
+.topbar-btn {
+    background: #3498db;
     border: none;
-    margin-left: 12px;
     padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
+    color: white;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.95rem;
-    transition: background 0.3s ease;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
 .topbar-btn:hover {
-    background: #34495e;
+    background: #2980b9;
 }
 
 .logout-btn {
-    background: #e74c3c;
+    background: transparent;
+    border: none;
+    color: #ff4d4f;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s;
 }
 
 .logout-btn:hover {
-    background: #c0392b;
+    color: #ff7875;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
