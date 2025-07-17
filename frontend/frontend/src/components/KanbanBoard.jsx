@@ -7,20 +7,20 @@ import TaskForm from "./TaskForm";
 import ConflictModal from "./ConflictModal";
 import { AuthContext } from "../context/AuthContext";
 import TaskDetailsModal from "./TaskDetailsModal";
+import TopBar from "./TopBar";
 
 import "../styles/KanbanBoard.css";
 
 const KanbanBoard = () => {
-  const { token, user } = useContext(AuthContext);
+  const { token, user, logout } = useContext(AuthContext);
+
   const [tasks, setTasks] = useState([]);
   const [activity, setActivity] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
   const [showActivity, setShowActivity] = useState(false);
-
-  // Conflict state
-  const [conflictTask, setConflictTask] = useState(null); // local version
-  const [serverTask, setServerTask] = useState(null); // server version
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [conflictTask, setConflictTask] = useState(null);
+  const [serverTask, setServerTask] = useState(null);
 
   const fetchTasks = async () => {
     const res = await axios.get("http://localhost:5000/api/tasks", {
@@ -31,20 +31,17 @@ const KanbanBoard = () => {
 
   useEffect(() => {
     const socket = io("http://localhost:5000");
-
     fetchTasks();
 
     const fetchActivity = async () => {
       const res = await axios.get("http://localhost:5000/api/tasks/actions", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       setActivity(res.data);
     };
 
     fetchActivity();
 
-    // Real-time socket updates
     socket.on("taskCreated", (task) => {
       setTasks((prev) => [...prev, task]);
       setActivity((prev) => [
@@ -76,7 +73,6 @@ const KanbanBoard = () => {
 
   const handleDragStart = (e, id) => {
     const task = tasks.find((t) => t._id === id);
-
     if (
       user.role === "admin" ||
       (task.assignedTo && task.assignedTo._id === user.id)
@@ -92,7 +88,6 @@ const KanbanBoard = () => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData("taskId");
     const task = tasks.find((t) => t._id === taskId);
-
     if (!task) return;
 
     if (
@@ -109,15 +104,14 @@ const KanbanBoard = () => {
           `http://localhost:5000/api/tasks/${taskId}`,
           {
             status: newStatus,
-            updatedAt: task.updatedAt, // Send version for conflict detection
+            updatedAt: task.updatedAt,
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
       } catch (err) {
         if (err.response && err.response.status === 409) {
-          // Conflict detected -> Open ConflictModal
-          setConflictTask(task); // Local copy
-          setServerTask(err.response.data.serverTask); // Server version
+          setConflictTask(task);
+          setServerTask(err.response.data.serverTask);
         } else {
           console.error(err);
         }
@@ -125,19 +119,16 @@ const KanbanBoard = () => {
     }
   };
 
-  // Conflict resolution handlers
-
   const handleMerge = async (mergedTask) => {
     try {
       await axios.put(
         `http://localhost:5000/api/tasks/${mergedTask._id}`,
         {
           ...mergedTask,
-          updatedAt: serverTask.updatedAt, // Use server's latest timestamp to avoid infinite conflict
+          updatedAt: serverTask.updatedAt,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setConflictTask(null);
       setServerTask(null);
       fetchTasks();
@@ -152,11 +143,10 @@ const KanbanBoard = () => {
         `http://localhost:5000/api/tasks/${conflictTask._id}`,
         {
           ...conflictTask,
-          updatedAt: serverTask.updatedAt, // Use server timestamp to force overwrite
+          updatedAt: serverTask.updatedAt,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setConflictTask(null);
       setServerTask(null);
       fetchTasks();
@@ -173,54 +163,45 @@ const KanbanBoard = () => {
   const columns = ["Todo", "In Progress", "Done"];
 
   return (
-    <div className="kanban-wrapper">
-      {user.role === "admin" && (
-        <div className="kanban-buttons">
-          <button
-            className="create-task-button"
-            onClick={() => setShowForm(true)}
-          >
-            + New Task
-          </button>
+    <>
+      <TopBar
+        user={user}
+        logout={logout}
+        onCreateTask={() => setShowForm(true)}
+        onToggleActivity={() => setShowActivity((prev) => !prev)}
+      />
 
-          <button
-            className="activity-toggle-button"
-            onClick={() => setShowActivity((prev) => !prev)}
-          >
-            {showActivity ? "Close Log" : "Activity Log"}
-          </button>
-        </div>
-      )}
-
-      <div className="kanban-board">
-        {columns.map((status) => (
-          <div
-            key={status}
-            onDrop={(e) => handleDrop(e, status)}
-            onDragOver={(e) => e.preventDefault()}
-            className="kanban-column"
-          >
-            <h3>{status}</h3>
-            <div className="task-list">
-              {tasks
-                .filter((t) => t.status === status)
-                .map((task) => (
-                  <TaskCard
-                    key={task._id}
-                    task={task}
-                    user={user}
-                    token={token}
-                    onDragStart={handleDragStart}
-                    onCardClick={(task) => setSelectedTask(task)}
-                    column={status}
-                  />
-                ))}
+      <div className="kanban-wrapper">
+        <div className="kanban-board">
+          {columns.map((status) => (
+            <div
+              key={status}
+              onDrop={(e) => handleDrop(e, status)}
+              onDragOver={(e) => e.preventDefault()}
+              className="kanban-column"
+            >
+              <h3>{status}</h3>
+              <div className="task-list">
+                {tasks
+                  .filter((t) => t.status === status)
+                  .map((task) => (
+                    <TaskCard
+                      key={task._id}
+                      task={task}
+                      user={user}
+                      token={token}
+                      onDragStart={handleDragStart}
+                      onCardClick={(task) => setSelectedTask(task)}
+                      column={status}
+                    />
+                  ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <ActivityLog activity={activity} show={showActivity} />
+        {showActivity && <ActivityLog activity={activity} />}
+      </div>
 
       {showForm && (
         <TaskForm
@@ -249,7 +230,7 @@ const KanbanBoard = () => {
           user={user}
         />
       )}
-    </div>
+    </>
   );
 };
 

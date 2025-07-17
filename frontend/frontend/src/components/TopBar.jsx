@@ -1,7 +1,8 @@
 import React from 'react';
-import '../styles/TopBar.css'; // Optional: For custom styling
+import { FiPlus, FiList, FiLogOut } from 'react-icons/fi';
+import '../styles/TopBar.css';
 
-const TopBar = ({ user, logout }) => {
+const TopBar = ({ user, logout, onCreateTask, onToggleActivity }) => {
     return (
         <div className="topbar">
             <div className="profile-section">
@@ -14,9 +15,21 @@ const TopBar = ({ user, logout }) => {
                 <span className="role">({user.role})</span>
             </div>
 
-            <button className="logout-btn" onClick={logout}>
-                Logout
-            </button>
+            <div className="topbar-actions">
+                {user.role === 'admin' && (
+                    <>
+                        <button className="topbar-btn" onClick={onCreateTask}>
+                            <FiPlus /> Task
+                        </button>
+                        <button className="topbar-btn" onClick={onToggleActivity}>
+                            <FiList /> Log
+                        </button>
+                    </>
+                )}
+                <button className="logout-btn" onClick={logout}>
+                    <FiLogOut /> Logout
+                </button>
+            </div>
         </div>
     );
 };
