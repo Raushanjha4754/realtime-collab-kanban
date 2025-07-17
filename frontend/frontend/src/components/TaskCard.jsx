@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import '../styles/TaskCard.css'
 
-const TaskCard = ({ task, user, token, onDragStart }) => {
+const TaskCard = ({ task, user, token, onDragStart, column }) => {
   const [users, setUsers] = useState([]);
-  const [isDragging, setIsDragging] = useState(false); // 🔥 For animation
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (user.role === "admin") {
@@ -42,21 +43,18 @@ const TaskCard = ({ task, user, token, onDragStart }) => {
 
   const handleManualAssign = async (e) => {
     const newUserId = e.target.value;
-
     try {
       await axios.put(
         `http://localhost:5000/api/tasks/${task._id}`,
         {
           assignedTo: newUserId,
-          updatedAt: task.updatedAt, // ✅ For conflict detection
+          updatedAt: task.updatedAt,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
     } catch (err) {
       if (err.response && err.response.status === 409) {
-        alert("Conflict detected! Someone else updated this task. Please refresh and try again.");
-      } else {
-        console.error(err);
+        alert("Conflict detected! Please refresh.");
       }
     }
   };
@@ -65,25 +63,37 @@ const TaskCard = ({ task, user, token, onDragStart }) => {
     await axios.post(
       `http://localhost:5000/api/tasks/claim/${task._id}`,
       {},
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
   };
 
-  // 🔥 Animation Style
+  // 🔥 Color based on column
+  const getCardColor = () => {
+    switch (column) {
+      case "Todo":
+        return "#00bcd4"; // Cyan
+      case "In Progress":
+        return "#f39c12"; // Orange
+      case "Done":
+        return "#2ecc71"; // Green
+      default:
+        return "#ccc";
+    }
+  };
+
   const cardStyle = {
-    padding: "10px",
-    background: "#fff",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    marginBottom: "10px",
-    cursor: "grab",
-    transition: "transform 0.2s ease, box-shadow 0.2s ease",
-    transform: isDragging ? "scale(1.05)" : "scale(1)",
+    padding: "15px",
+    background: getCardColor(),
+    borderRadius: "10px",
+    marginBottom: "12px",
     boxShadow: isDragging
       ? "0 8px 20px rgba(0,0,0,0.3)"
-      : "0 2px 5px rgba(0,0,0,0.1)",
+      : "0 4px 8px rgba(0,0,0,0.08)",
+    transform: isDragging ? "scale(1.05)" : "scale(1)",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    color: "#fff",
+    cursor: "grab",
+    borderLeft: `5px solid ${getCardColor()}`,
   };
 
   return (
@@ -95,24 +105,21 @@ const TaskCard = ({ task, user, token, onDragStart }) => {
     >
       <h4>{task.title}</h4>
       <p>{task.description}</p>
-      <p>
+      <p className="task-assignee">
         <b>Assigned To:</b> {task.assignedTo?.username || "Unassigned"}
       </p>
 
+      {/* Both admin and user can see claim button */}
+      {!task.assignedTo && (
+        <button onClick={handleClaimTask} className="task-btn claim-btn">
+          Claim Task
+        </button>
+      )}
+
+      {/* Admin only actions */}
       {user.role === "admin" && (
         <>
-          <select
-            onChange={handleManualAssign}
-            defaultValue=""
-            style={{
-              width: "100%",
-              marginTop: "5px",
-              padding: "5px",
-              borderRadius: "4px",
-              border: "1px solid #aaa",
-              background: "#f8f8f8",
-            }}
-          >
+          <select onChange={handleManualAssign} defaultValue="" className="task-select">
             <option value="">Reassign to...</option>
             {users.map((u) => (
               <option key={u._id} value={u._id}>
@@ -121,54 +128,15 @@ const TaskCard = ({ task, user, token, onDragStart }) => {
             ))}
           </select>
 
-          <div style={{ marginTop: "8px", display: "flex", gap: "4px" }}>
-            <button
-              onClick={handleDelete}
-              style={{
-                flex: 1,
-                background: "red",
-                color: "#fff",
-                border: "none",
-                padding: "5px",
-                borderRadius: "4px",
-              }}
-            >
+          <div className="task-actions">
+            <button onClick={handleDelete} className="task-btn delete-btn">
               Delete
             </button>
-
-            <button
-              onClick={handleSmartAssign}
-              style={{
-                flex: 1,
-                background: "green",
-                color: "#fff",
-                border: "none",
-                padding: "5px",
-                borderRadius: "4px",
-              }}
-            >
+            <button onClick={handleSmartAssign} className="task-btn assign-btn">
               Smart Assign
             </button>
           </div>
         </>
-      )}
-
-      {/* Claim Task (Both Admin & User) */}
-      {!task.assignedTo && (
-        <button
-          onClick={handleClaimTask}
-          style={{
-            background: "#007bff",
-            color: "#fff",
-            border: "none",
-            padding: "5px",
-            borderRadius: "4px",
-            marginTop: "5px",
-            width: "100%",
-          }}
-        >
-          Claim Task
-        </button>
       )}
     </div>
   );

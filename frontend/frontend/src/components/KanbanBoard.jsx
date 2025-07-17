@@ -199,6 +199,7 @@ const KanbanBoard = () => {
                   user={user}
                   token={token}
                   onDragStart={handleDragStart}
+                  column={status}
                 />
               ))}
               </div>
