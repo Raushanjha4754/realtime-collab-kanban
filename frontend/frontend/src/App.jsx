@@ -5,6 +5,8 @@ import Register from "./components/Register";
 import KanbanBoard from "./components/KanbanBoard";
 import TopBar from "./components/TopBar";
 
+import './App.css'
+
 const App = () => {
   const { user, token, logout } = useContext(AuthContext);
   const [showLogin, setShowLogin] = useState(true);
@@ -18,11 +20,11 @@ const App = () => {
   }
 
   return (
-    <>
-      <TopBar user={user} logout={logout} />
+    <div className="app-container">
+  <TopBar user={user} logout={logout} />
+  <KanbanBoard />
+</div>
 
-      <KanbanBoard />
-    </>
   );
 };
 

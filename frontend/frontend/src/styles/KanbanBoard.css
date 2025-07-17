@@ -6,6 +6,7 @@
     background: linear-gradient(135deg, #e0f7fa, #fff);
     font-family: 'Segoe UI', sans-serif;
     overflow: hidden;
+    width: 100vw;
 }
 
 /* Kanban board (columns section) */
