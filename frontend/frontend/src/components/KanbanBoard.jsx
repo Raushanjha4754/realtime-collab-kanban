@@ -44,28 +44,19 @@ const KanbanBoard = () => {
 
     socket.on("taskCreated", (task) => {
       setTasks((prev) => [...prev, task]);
-      setActivity((prev) => [
-        { message: `Task "${task.title}" created`, time: new Date() },
-        ...prev,
-      ]);
+      fetchActivity(); // 🔥 Always fetch from backend to get updated logs
     });
 
     socket.on("taskUpdated", (updatedTask) => {
       setTasks((prev) =>
         prev.map((t) => (t._id === updatedTask._id ? updatedTask : t))
       );
-      setActivity((prev) => [
-        { message: `Task "${updatedTask.title}" updated`, time: new Date() },
-        ...prev,
-      ]);
+      fetchActivity();
     });
 
     socket.on("taskDeleted", (taskId) => {
       setTasks((prev) => prev.filter((t) => t._id !== taskId));
-      setActivity((prev) => [
-        { message: `Task deleted`, time: new Date() },
-        ...prev,
-      ]);
+      fetchActivity();
     });
 
     return () => socket.disconnect();
